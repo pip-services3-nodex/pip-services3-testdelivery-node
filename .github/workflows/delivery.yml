@@ -3,7 +3,7 @@ name: Pip.Services TestDelivery repo Nodex
 # Cofigure trigger rules
 on: 
   push:
-    paths:
+    path:
     - '**'
     - '!README.md'
 
@@ -31,13 +31,13 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: delivery-artifacts
-        paths: script-delivery-ps
+        path: script-delivery-ps
 
     - name: Upload component*.json as artifacts
       uses: actions/upload-artifact@v2
       with:
         name: delivery-artifacts
-        paths: component*.json
+        path: component*.json
 
   # Authoring job
   authoring:
@@ -99,12 +99,17 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps: 
-    - uses: actions/download-artifact@master
+    - name: Download delivery scripts from artifacts
+      uses: actions/download-artifact@master
       with:
         name: delivery-artifacts
-        path: |
-          script-delivery-ps
-          component*.json
+        path: script-delivery-ps
+
+    - name: Download delivery scripts from artifacts
+      uses: actions/download-artifact@master
+      with:
+        name: delivery-artifacts
+        path: component*.json
 
     - name: Run script to get metrics and update s3 file
       run: ./script-delivery-ps/measure/measure.ps1 $(echo '${{ github.repository }}' | awk -F '/' '{print $1}') $(echo '${{ github.repository }}' | awk -F '/' '{print $2}') ${{ secrets.AWS_ACCESS_KEY_ID }} ${{ secrets.AWS_SECRET_ACCESS_KEY }} ${{ secrets.AWS_S3_BUCKET }} ${{ secrets.GITHUB_TOKEN }}
