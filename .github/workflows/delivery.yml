@@ -50,7 +50,10 @@ jobs:
 
     - name: Execute build script
       shell: bash
-      run: ./script-delivery-ps/setup/build/build.ps1
+      run: |
+        pwd
+        ls -al
+        ./script-delivery-ps/setup/build/build.ps1
 
     - name: Execute test script
       shell: bash
