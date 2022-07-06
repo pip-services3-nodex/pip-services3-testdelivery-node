@@ -3,7 +3,7 @@ name: Pip.Services TestDelivery repo Nodex
 # Cofigure trigger rules
 on: 
   push:
-    path:
+    paths:
     - '**'
     - '!README.md'
 
@@ -27,17 +27,13 @@ jobs:
       shell: bash
       run: ./script-delivery-ps/setup/prereqs/prereqs.ps1
 
-    - name: Upload delivery-script as artifacts
-      uses: actions/upload-artifact@v2
+    - name: Cache delivery artifacts
+      uses: actions/cache@v3
       with:
-        name: delivery-artifacts
-        path: script-delivery-ps
-
-    - name: Upload component*.json as artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: delivery-artifacts
-        path: component*.json
+        path: |
+          script-delivery-ps
+          component*.json
+        key: delivery-${{ hashFiles('script-delivery-ps') }}-${{ hashFiles('component*.json') }}
 
   # Authoring job
   authoring:
@@ -48,17 +44,13 @@ jobs:
     - name: Checkout source code
       uses: actions/checkout@main
 
-    - name: Download delivery scripts from artifacts
-      uses: actions/download-artifact@master
+    - name: Get cached delivery artifacts
+      uses: actions/cache@v3
       with:
-        name: delivery-artifacts
-        path: script-delivery-ps
-
-    - name: Download delivery scripts from artifacts
-      uses: actions/download-artifact@master
-      with:
-        name: delivery-artifacts
-        path: component*.json
+        path: |
+          script-delivery-ps
+          component*.json
+        key: delivery-${{ hashFiles('script-delivery-ps') }}-${{ hashFiles('component*.json') }}
 
     - name: Execute build script
       shell: bash
@@ -99,18 +91,18 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps: 
-    - name: Download delivery scripts from artifacts
-      uses: actions/download-artifact@master
+    - name: Get cached delivery artifact
+      uses: actions/cache@v3
       with:
-        name: delivery-artifacts
-        path: script-delivery-ps
-
-    - name: Download delivery scripts from artifacts
-      uses: actions/download-artifact@master
-      with:
-        name: delivery-artifacts
-        path: component*.json
+        path: |
+          script-delivery-ps
+          component*.json
+        key: delivery-${{ hashFiles('script-delivery-ps') }}-${{ hashFiles('component*.json') }}
 
     - name: Run script to get metrics and update s3 file
-      run: ./script-delivery-ps/measure/measure.ps1 $(echo '${{ github.repository }}' | awk -F '/' '{print $1}') $(echo '${{ github.repository }}' | awk -F '/' '{print $2}') ${{ secrets.AWS_ACCESS_KEY_ID }} ${{ secrets.AWS_SECRET_ACCESS_KEY }} ${{ secrets.AWS_S3_BUCKET }} ${{ secrets.GITHUB_TOKEN }}
+      env:
+        organization: $(echo '${{ github.repository }}' | awk -F '/' '{print $1}')
+      run: |
+        echo ${{ env.organization }}
+        ./script-delivery-ps/measure/measure.ps1 ${{ env.organization }} $(echo '${{ github.repository }}' | awk -F '/' '{print $2}') ${{ secrets.AWS_ACCESS_KEY_ID }} ${{ secrets.AWS_SECRET_ACCESS_KEY }} ${{ secrets.AWS_S3_BUCKET }} ${{ secrets.GITHUB_TOKEN }}
       shell: bash
