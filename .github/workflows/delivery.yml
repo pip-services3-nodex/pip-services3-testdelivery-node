@@ -20,7 +20,7 @@ jobs:
       shell: bash
       run: |
         rm -rf script-delivery-ps
-        git clone {{ secrets.SCRIPTS_DELIVERY_PS_GIT_URL }} script-delivery-ps
+        git clone ${{ secrets.SCRIPTS_DELIVERY_PS_GIT_URL }} script-delivery-ps
 
     - name: Execute prerequisites script
       shell: bash
