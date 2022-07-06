@@ -14,7 +14,8 @@ jobs:
     if: "!contains(github.event.head_commit.message, '[skip-ci]')"
 
     steps:
-    - uses: actions/checkout@main
+    - name: Checkout source code
+      uses: actions/checkout@main
 
     - name: Pull delivery scripts
       shell: bash
@@ -26,12 +27,17 @@ jobs:
       shell: bash
       run: ./script-delivery-ps/setup/prereqs/prereqs.ps1
 
-    - uses: actions/upload-artifact@master
+    - name: Upload delivery-script as artifacts
+      uses: actions/upload-artifact@v2
       with:
         name: delivery-artifacts
-        path: |
-          script-delivery-ps
-          component*.json
+        paths: script-delivery-ps
+
+    - name: Upload component*.json as artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: delivery-artifacts
+        paths: component*.json
 
   # Authoring job
   authoring:
@@ -39,14 +45,20 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
-    - uses: actions/checkout@main
+    - name: Checkout source code
+      uses: actions/checkout@main
 
-    - uses: actions/download-artifact@master
+    - name: Download delivery scripts from artifacts
+      uses: actions/download-artifact@master
       with:
         name: delivery-artifacts
-        path: |
-          script-delivery-ps
-          component*.json
+        path: script-delivery-ps
+
+    - name: Download delivery scripts from artifacts
+      uses: actions/download-artifact@master
+      with:
+        name: delivery-artifacts
+        path: component*.json
 
     - name: Execute build script
       shell: bash
