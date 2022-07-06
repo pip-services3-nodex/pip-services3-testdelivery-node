@@ -33,7 +33,7 @@ jobs:
         path: |
           script-delivery-ps
           component*.json
-        key: delivery-${{ hashFiles('script-delivery-ps') }}-${{ hashFiles('component*.json') }}
+        key: delivery-${{ github.run_number }}
 
   # Authoring job
   authoring:
@@ -50,7 +50,7 @@ jobs:
         path: |
           script-delivery-ps
           component*.json
-        key: delivery-${{ hashFiles('script-delivery-ps') }}-${{ hashFiles('component*.json') }}
+        key: delivery-${{ github.run_number }}
 
     - name: Execute build script
       shell: bash
@@ -97,12 +97,14 @@ jobs:
         path: |
           script-delivery-ps
           component*.json
-        key: delivery-${{ hashFiles('script-delivery-ps') }}-${{ hashFiles('component*.json') }}
+        key: delivery-${{ github.run_number }}
 
     - name: Run script to get metrics and update s3 file
       env:
         organization: $(echo '${{ github.repository }}' | awk -F '/' '{print $1}')
+        name: $(echo '${{ github.repository }}' | awk -F '/' '{print $2}')
       run: |
+        echo ${{ github.repository_owner }}
         echo ${{ env.organization }}
-        ./script-delivery-ps/measure/measure.ps1 ${{ env.organization }} $(echo '${{ github.repository }}' | awk -F '/' '{print $2}') ${{ secrets.AWS_ACCESS_KEY_ID }} ${{ secrets.AWS_SECRET_ACCESS_KEY }} ${{ secrets.AWS_S3_BUCKET }} ${{ secrets.GITHUB_TOKEN }}
+        ./script-delivery-ps/measure/measure.ps1 ${{ github.repository_owner }} $(echo '${{ github.repository }}' | awk -F '/' '{print $2}') ${{ secrets.AWS_ACCESS_KEY_ID }} ${{ secrets.AWS_SECRET_ACCESS_KEY }} ${{ secrets.AWS_S3_BUCKET }} ${{ secrets.GITHUB_TOKEN }}
       shell: bash
