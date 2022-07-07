@@ -61,6 +61,8 @@ jobs:
         ls -al
         cat component_latest_run.json
         ls -al script-delivery-ps
+        ls -al script-delivery-ps/setup
+        ls -al script-delivery-ps/setup/build
         script-delivery-ps/setup/build/build.ps1
 
     - name: Execute test script
