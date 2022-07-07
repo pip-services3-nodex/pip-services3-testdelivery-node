@@ -25,7 +25,9 @@ jobs:
 
     - name: Execute prerequisites script
       shell: bash
-      run: ./script-delivery-ps/setup/prereqs/prereqs.ps1
+      run: |
+        ./script-delivery-ps/setup/prereqs/prereqs.ps1
+        ls -al
 
     - name: Cache delivery artifacts
       uses: actions/cache@v3
@@ -33,7 +35,7 @@ jobs:
         path: |
           script-delivery-ps
           component*.json
-        key: delivery-${{ github.run_number }}
+        key: delivery-${{ github.run_id }}
 
   # Authoring job
   authoring:
@@ -50,13 +52,14 @@ jobs:
         path: |
           script-delivery-ps
           component*.json
-        key: delivery-${{ github.run_number }}
+        key: delivery-${{ github.run_id }}
 
     - name: Execute build script
       shell: bash
       run: |
         pwd
         ls -al
+        cat component_latest_run.json
         ./script-delivery-ps/setup/build/build.ps1
 
     - name: Execute test script
@@ -97,7 +100,7 @@ jobs:
         path: |
           script-delivery-ps
           component*.json
-        key: delivery-${{ github.run_number }}
+        key: delivery-${{ github.run_id }}
 
     - name: Run script to get metrics and update s3 file
       env:
