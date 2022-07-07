@@ -23,13 +23,13 @@ jobs:
         rm -rf script-delivery-ps
         git clone ${{ secrets.SCRIPTS_DELIVERY_PS_GIT_URL }} script-delivery-ps
 
-    - name: Execute prerequisites script
-      shell: bash
-      run: ./script-delivery-ps/setup/prereqs/prereqs.ps1
-
     - name: Execute increment script
       shell: bash
       run: ./script-delivery-ps/setup/increment/increment.ps1
+
+    - name: Execute prerequisites script
+      shell: bash
+      run: ./script-delivery-ps/setup/prereqs/prereqs.ps1
 
     - name: Cache delivery artifacts
       uses: actions/cache@v3
