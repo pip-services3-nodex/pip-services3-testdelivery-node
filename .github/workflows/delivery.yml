@@ -25,10 +25,13 @@ jobs:
 
     - name: Execute prerequisites script
       shell: bash
+      run: ./script-delivery-ps/setup/prereqs/prereqs.ps1
+
+    - name: Execute increment script
+      shell: bash
       run: |
-        ./script-delivery-ps/setup/prereqs/prereqs.ps1
-        echo ${{ github.run_number }}
-        echo ${{ github.run_attempt }}
+        ./script-delivery-ps/setup/increment/increment.ps1
+        cat component.json
 
     - name: Cache delivery artifacts
       uses: actions/cache@v3
@@ -73,7 +76,9 @@ jobs:
 
     - name: Execute tag script
       shell: bash
-      run: ./script-delivery-ps/authoring/tag/tag.ps1
+      run: |
+        cat component.json
+        ./script-delivery-ps/authoring/tag/tag.ps1
 
     - name: Execute release script
       shell: bash
