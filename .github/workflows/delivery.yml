@@ -60,7 +60,8 @@ jobs:
         pwd
         ls -al
         cat component_latest_run.json
-        ./script-delivery-ps/setup/build/build.ps1
+        ls -al script-delivery-ps
+        script-delivery-ps/setup/build/build.ps1
 
     - name: Execute test script
       shell: bash
