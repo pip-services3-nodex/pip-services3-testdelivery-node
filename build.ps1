@@ -17,8 +17,11 @@ if (Test-Path -Path "$PSScriptRoot/obj") {
 if (-not (Test-Path -Path "$PSScriptRoot/docker/id_rsa")) {
     if ($env:GIT_PRIVATE_KEY -ne $null) {
         Set-Content -Path "$PSScriptRoot/docker/id_rsa" -Value $env:GIT_PRIVATE_KEY
-    } else {
+    } elseif (Test-Path -Path "~/.ssh/id_rsa") {
         Copy-Item -Path "~/.ssh/id_rsa" -Destination "docker"
+    } else {
+        Write-Host "Missing ~/.ssh/id_rsa file..."
+        Set-Content -Path "$PSScriptRoot/docker/id_rsa" -Value ""
     }
 }
 
