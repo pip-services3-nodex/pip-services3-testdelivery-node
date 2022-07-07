@@ -27,7 +27,8 @@ jobs:
       shell: bash
       run: |
         ./script-delivery-ps/setup/prereqs/prereqs.ps1
-        ls -al
+        echo ${{ github.run_number }}
+        echo ${{ github.run_id }}
 
     - name: Cache delivery artifacts
       uses: actions/cache@v3
