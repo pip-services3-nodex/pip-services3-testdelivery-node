@@ -76,10 +76,6 @@ jobs:
       shell: bash
       run: ./script-delivery-ps/authoring/tag/tag.ps1
 
-    - name: Execute release script
-      shell: bash
-      run: ./script-delivery-ps/authoring/release/release.ps1
-
     - name: Execute clean script
       if: always()
       shell: bash
