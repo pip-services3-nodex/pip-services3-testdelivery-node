@@ -45,8 +45,8 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
-    # - name: Checkout source code
-    #   uses: actions/checkout@main
+    - name: Checkout source code
+      uses: actions/checkout@main
 
     - name: Get cached delivery artifacts
       uses: actions/cache@v3
@@ -87,12 +87,12 @@ jobs:
 
   # Integration job
   integration:
-    needs: setup
+    needs: authoring
     runs-on: ubuntu-18.04
 
     steps:
-    # - name: Checkout source code
-    #   uses: actions/checkout@main
+    - name: Checkout source code
+      uses: actions/checkout@main
 
     - name: Get cached delivery artifacts
       uses: actions/cache@v3
@@ -120,12 +120,12 @@ jobs:
 
   # Assembling job
   assembling:
-    needs: setup
+    needs: integration
     runs-on: ubuntu-18.04
 
     steps:
-    # - name: Checkout source code
-    #   uses: actions/checkout@main
+    - name: Checkout source code
+      uses: actions/checkout@main
 
     - name: Get cached delivery artifacts
       uses: actions/cache@v3
@@ -149,12 +149,12 @@ jobs:
 
   # Acceptance job
   acceptance:
-    needs: setup
+    needs: assembling
     runs-on: ubuntu-18.04
 
     steps:
-    # - name: Checkout source code
-    #   uses: actions/checkout@main
+    - name: Checkout source code
+      uses: actions/checkout@main
 
     - name: Get cached delivery artifacts
       uses: actions/cache@v3
@@ -178,12 +178,12 @@ jobs:
 
   # Release job
   release:
-    needs: setup
+    needs: acceptance
     runs-on: ubuntu-18.04
 
     steps:
-    # - name: Checkout source code
-    #   uses: actions/checkout@main
+    - name: Checkout source code
+      uses: actions/checkout@main
 
     - name: Get cached delivery artifacts
       uses: actions/cache@v3
@@ -207,7 +207,7 @@ jobs:
 
   # Measure job
   measure:
-    needs: authoring
+    needs: release
     if: always()
     runs-on: ubuntu-18.04
 
