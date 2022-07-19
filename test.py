@@ -15,10 +15,10 @@ os.environ["IMAGE"] = test_image
 
 # Run tests in docker container
 try:
-    os.system(f"docker-compose -f {path}/docker/docker-compose.test.yml down")
-    exit_code = os.system(f"docker-compose -f {path}/docker/docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from test")
+    os.system(f"docker-compose -f \"{path}/docker/docker-compose.test.yml\" down")
+    exit_code = os.system(f"docker-compose -f \"{path}/docker/docker-compose.test.yml\" up --build --abort-on-container-exit --exit-code-from test")
 finally:
-    os.system(f"docker-compose -f {path}/docker/docker-compose.test.yml down")
+    os.system(f"docker-compose -f \"{path}/docker/docker-compose.test.yml\" down")
 
 # End script with exit code from tests
 print(f"component test script exited with {exit_code}")
