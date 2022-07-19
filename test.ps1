@@ -18,6 +18,10 @@ try {
 
     # Save the result to avoid overwriting it with the "down" command below
     $exitCode = $LastExitCode 
+    # Prevent out of range exit code on github runner
+    if ($exitCode -ne 0) {
+        $exitCode = 1
+    }
 } finally {
     # Workaround to remove dangling images
     docker-compose -f "$PSScriptRoot/docker/docker-compose.test.yml" down

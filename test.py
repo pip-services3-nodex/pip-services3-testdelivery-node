@@ -17,11 +17,11 @@ os.environ["IMAGE"] = test_image
 try:
     os.system(f"docker-compose -f \"{path}/docker/docker-compose.test.yml\" down")
     exit_code = os.system(f"docker-compose -f \"{path}/docker/docker-compose.test.yml\" up --build --abort-on-container-exit --exit-code-from test")
+    # prevent out of range exit code on github runner
+    if exit_code != 0:
+        exit_code = 1
 finally:
     os.system(f"docker-compose -f \"{path}/docker/docker-compose.test.yml\" down")
 
 # End script with exit code from tests
-print(f"component test script exited with {exit_code}")
-test_exit_code = os.system("docker ps")
-print(f"test exit code {test_exit_code}")
 sys.exit(exit_code)
