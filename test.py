@@ -22,4 +22,6 @@ finally:
 
 # End script with exit code from tests
 print(f"component test script exited with {exit_code}")
+test_exit_code = os.system("docker ps")
+print(f"test exit code {test_exit_code}")
 sys.exit(exit_code)
