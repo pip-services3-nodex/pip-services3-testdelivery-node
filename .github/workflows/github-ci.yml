@@ -213,11 +213,15 @@ jobs:
     - name: Get cached delivery artifact
       uses: actions/cache@v3
       with:
-        path: script-delivery-py
+        path: |
+          script-delivery-py
         key: delivery-${{ github.run_id }}-${{ github.run_attempt }}
 
     - name: Run script to get metrics and update s3 file
       env:
         name: $(echo '${{ github.repository }}' | awk -F '/' '{print $2}')
-      run: ./script-delivery-py/measure/measure.py ${{ github.repository_owner }} ${{ env.name }} ${{ secrets.AWS_ACCESS_KEY_ID }} ${{ secrets.AWS_SECRET_ACCESS_KEY }} ${{ secrets.AWS_S3_BUCKET }} ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        ls -al
+        ls -al ./script-delivery-py
+        ./script-delivery-py/measure/measure.py ${{ github.repository_owner }} ${{ env.name }} ${{ secrets.AWS_ACCESS_KEY_ID }} ${{ secrets.AWS_SECRET_ACCESS_KEY }} ${{ secrets.AWS_S3_BUCKET }} ${{ secrets.GITHUB_TOKEN }}
       shell: bash

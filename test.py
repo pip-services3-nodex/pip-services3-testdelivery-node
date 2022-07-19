@@ -21,4 +21,5 @@ finally:
     os.system(f"docker-compose -f {path}/docker/docker-compose.test.yml down")
 
 # End script with exit code from tests
+print(f"component test script exited with {exit_code}")
 sys.exit(exit_code)
