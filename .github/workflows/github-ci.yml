@@ -20,24 +20,22 @@ jobs:
     - name: Pull delivery scripts
       shell: bash
       run: |
-        rm -rf script-delivery-py
-        git clone ${{ secrets.SCRIPTS_DELIVERY_PY_GIT_URL }} script-delivery-py
+        rm -rf script-delivery-ps
+        git clone ${{ secrets.SCRIPTS_DELIVERY_PS_GIT_URL }} script-delivery-ps
 
     - name: Execute increment script
       shell: bash
-      run: ./script-delivery-py/setup/increment/increment.py
+      run: ./script-delivery-ps/setup/increment/increment.ps1
 
     - name: Execute prerequisites script
       shell: bash
-      run: |
-        python3 -m pip install -r ./script-delivery-py/requirements.txt
-        ./script-delivery-py/setup/prereqs/prereqs.py
+      run: ./script-delivery-ps/setup/prereqs/prereqs.ps1
 
     - name: Cache delivery artifacts
       uses: actions/cache@v3
       with:
         path: |
-          script-delivery-py
+          script-delivery-ps
           component*.json
         key: delivery-${{ github.run_id }}-${{ github.run_attempt }}
 
@@ -54,34 +52,34 @@ jobs:
       uses: actions/cache@v3
       with:
         path: |
-          script-delivery-py
+          script-delivery-ps
           component*.json
         key: delivery-${{ github.run_id }}-${{ github.run_attempt }}
 
     - name: Execute build script
       shell: bash
-      run: script-delivery-py/authoring/build/build.py
+      run: script-delivery-ps/authoring/build/build.ps1
 
     - name: Execute test script
       shell: bash
-      run: ./script-delivery-py/authoring/test/test.py
+      run: ./script-delivery-ps/authoring/test/test.ps1
 
     - name: Execute package script
       shell: bash
-      run: ./script-delivery-py/authoring/package/package.py
+      run: ./script-delivery-ps/authoring/package/package.ps1
 
     - name: Execute publish script
       shell: bash
-      run: ./script-delivery-py/authoring/publish/publish.py
+      run: ./script-delivery-ps/authoring/publish/publish.ps1
 
     - name: Execute tag script
       shell: bash
-      run: ./script-delivery-py/authoring/tag/tag.py
+      run: ./script-delivery-ps/authoring/tag/tag.ps1
 
     - name: Execute clean script
       if: always()
       shell: bash
-      run: ./script-delivery-py/authoring/clean/clean.py
+      run: ./script-delivery-ps/authoring/clean/clean.ps1
 
   # Integration job
   integration:
@@ -96,25 +94,25 @@ jobs:
       uses: actions/cache@v3
       with:
         path: |
-          script-delivery-py
+          script-delivery-ps
           component*.json
         key: delivery-${{ github.run_id }}-${{ github.run_attempt }}
 
     - name: Execute prepare script
       shell: bash
-      run: ./script-delivery-py/integration/prepare/prepare.py
+      run: ./script-delivery-ps/integration/prepare/prepare.ps1
 
     - name: Execute deploy script
       shell: bash
-      run: ./script-delivery-py/integration/deploy/deploy.py
+      run: ./script-delivery-ps/integration/deploy/deploy.ps1
 
     - name: Execute ci_test script
       shell: bash
-      run: ./script-delivery-py/integration/ci_test/ci_test.py
+      run: ./script-delivery-ps/integration/ci_test/ci_test.ps1
 
     - name: Execute rollback script
       shell: bash
-      run: ./script-delivery-py/integration/rollback/rollback.py
+      run: ./script-delivery-ps/integration/rollback/rollback.ps1
 
   # Assembling job
   assembling:
@@ -129,21 +127,21 @@ jobs:
       uses: actions/cache@v3
       with:
         path: |
-          script-delivery-py
+          script-delivery-ps
           component*.json
         key: delivery-${{ github.run_id }}-${{ github.run_attempt }}
 
     - name: Execute baseline script
       shell: bash
-      run: ./script-delivery-py/assembling/baseline/baseline.py
+      run: ./script-delivery-ps/assembling/baseline/baseline.ps1
 
     - name: Execute package_assembly script
       shell: bash
-      run: ./script-delivery-py/assembling/package_assembly/package_assembly.py
+      run: ./script-delivery-ps/assembling/package_assembly/package_assembly.ps1
 
     - name: Execute publish_assembly script
       shell: bash
-      run: ./script-delivery-py/assembling/publish_assembly/publish_assembly.py
+      run: ./script-delivery-ps/assembling/publish_assembly/publish_assembly.ps1
 
   # Acceptance job
   acceptance:
@@ -158,21 +156,21 @@ jobs:
       uses: actions/cache@v3
       with:
         path: |
-          script-delivery-py
+          script-delivery-ps
           component*.json
         key: delivery-${{ github.run_id }}-${{ github.run_attempt }}
 
     - name: Execute functional script
       shell: bash
-      run: ./script-delivery-py/acceptance/functional/functional.py
+      run: ./script-delivery-ps/acceptance/functional/functional.ps1
 
     - name: Execute functional script
       shell: bash
-      run: ./script-delivery-py/acceptance/benchmark/benchmark.py
+      run: ./script-delivery-ps/acceptance/benchmark/benchmark.ps1
 
     - name: Execute certify script
       shell: bash
-      run: ./script-delivery-py/acceptance/certify/certify.py
+      run: ./script-delivery-ps/acceptance/certify/certify.ps1
 
   # Release job
   release:
@@ -187,21 +185,21 @@ jobs:
       uses: actions/cache@v3
       with:
         path: |
-          script-delivery-py
+          script-delivery-ps
           component*.json
         key: delivery-${{ github.run_id }}-${{ github.run_attempt }}
 
     - name: Execute document script
       shell: bash
-      run: ./script-delivery-py/release/document/document.py
+      run: ./script-delivery-ps/release/document/document.ps1
 
     - name: Execute release script
       shell: bash
-      run: ./script-delivery-py/release/release/release.py
+      run: ./script-delivery-ps/release/release/release.ps1
 
     - name: Execute notify script
       shell: bash
-      run: ./script-delivery-py/release/notify/notify.py
+      run: ./script-delivery-ps/release/notify/notify.ps1
 
   # Measure job
   measure:
@@ -214,14 +212,12 @@ jobs:
       uses: actions/cache@v3
       with:
         path: |
-          script-delivery-py
+          script-delivery-ps
           component*.json
         key: delivery-${{ github.run_id }}-${{ github.run_attempt }}
 
     - name: Run script to get metrics and update s3 file
       env:
         name: $(echo '${{ github.repository }}' | awk -F '/' '{print $2}')
-      run: |
-        python3 -m pip install -r ./script-delivery-py/requirements.txt
-        ./script-delivery-py/measure/measure.py ${{ github.repository_owner }} ${{ env.name }} ${{ secrets.AWS_ACCESS_KEY_ID }} ${{ secrets.AWS_SECRET_ACCESS_KEY }} ${{ secrets.AWS_S3_BUCKET }} ${{ secrets.GITHUB_TOKEN }}
+      run: ./script-delivery-ps/measure/measure.ps1 ${{ github.repository_owner }} ${{ env.name }} ${{ secrets.AWS_ACCESS_KEY_ID }} ${{ secrets.AWS_SECRET_ACCESS_KEY }} ${{ secrets.AWS_S3_BUCKET }} ${{ secrets.GITHUB_TOKEN }}
       shell: bash
