@@ -29,7 +29,9 @@ jobs:
 
     - name: Execute prerequisites script
       shell: bash
-      run: ./script-delivery-py/setup/prereqs/prereqs.py
+      run: |
+        python3 -m pip install -r ./script-delivery-py/requirements.txt
+        ./script-delivery-py/setup/prereqs/prereqs.py
 
     - name: Cache delivery artifacts
       uses: actions/cache@v3
