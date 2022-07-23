@@ -18,6 +18,9 @@ if os.path.exists(f"{path}/obj"):
     shutil.rmtree(f"{path}/obj")
 
 # Copy private keys to access git repo
+print("GIT_PRIVATE_KEY" in os.environ)
+print(os.environ["GIT_PRIVATE_KEY"] != "")
+print(os.environ["GIT_PRIVATE_KEY"])
 if not os.path.exists(f"{path}/docker/id_rsa"):
     if "GIT_PRIVATE_KEY" in os.environ and os.environ["GIT_PRIVATE_KEY"] != "":
         print("Creating docker/id_rsa from environment variable...")
