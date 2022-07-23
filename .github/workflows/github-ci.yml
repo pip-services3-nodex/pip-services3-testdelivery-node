@@ -75,10 +75,26 @@ jobs:
       shell: bash
       run: ./script-delivery-ps/authoring/publish/publish.ps1
       env:
+        # Docker
         DOCKER_USER: ${{ secrets.DOCKER_USER }}
         DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+        # Node.Js
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        # Dart
         PUB_DEV_PUBLISH_ACCESS_TOKEN: ${{ secrets.PUB_DEV_PUBLISH_ACCESS_TOKEN }}
+        PUB_DEV_PUBLISH_REFRESH_TOKEN: ${{ secrets.PUB_DEV_PUBLISH_REFRESH_TOKEN }}
+        PUB_DEV_PUBLISH_TOKEN_ENDPOINT: ${{ secrets.PUB_DEV_PUBLISH_TOKEN_ENDPOINT }}
+        PUB_DEV_PUBLISH_EXPIRATION: ${{ secrets.PUB_DEV_PUBLISH_EXPIRATION }}
+        # Dotnet
+        NUGET_KEY: ${{ secrets.NUGET_KEY }}
+        # Java
+        GPG_PUBLIC_KEY: ${{ secrets.GPG_PUBLIC_KEY }}
+        GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        M2_USER: ${{ secrets.M2_USER }}
+        M2_PASS: ${{ secrets.M2_PASS }}
+        # S3
+        S3_BUCKET: ${{ secrets.S3_BUCKET }}
 
     - name: Execute tag script
       shell: bash
