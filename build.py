@@ -18,13 +18,8 @@ if os.path.exists(f"{path}/obj"):
     shutil.rmtree(f"{path}/obj")
 
 # Copy private keys to access git repo
-print("GIT_PRIVATE_KEY" in os.environ)
-print(os.environ["GIT_PRIVATE_KEY"] != "")
-print(os.environ["GIT_PRIVATE_KEY"] == None)
-print(not os.environ["GIT_PRIVATE_KEY"])
-
 if not os.path.exists(f"{path}/docker/id_rsa"):
-    if "GIT_PRIVATE_KEY" in os.environ and os.environ["GIT_PRIVATE_KEY"] != "":
+    if "GIT_PRIVATE_KEY" in os.environ and not os.environ["GIT_PRIVATE_KEY"]:
         print("Creating docker/id_rsa from environment variable...")
         with open(f"{path}/docker/id_rsa", "w") as f:
             f.write(os.environ["GIT_PRIVATE_KEY"])
@@ -38,7 +33,7 @@ if not os.path.exists(f"{path}/docker/id_rsa"):
 
 # Copy .npmrc to docker folder to use it inside container
 if not os.path.exists(f"{path}/docker/.npmrc"):
-    if "NPM_TOKEN" in os.environ and os.environ["NPM_TOKEN"] != "":
+    if "NPM_TOKEN" in os.environ and not os.environ["NPM_TOKEN"]:
         print("Creating docker/.npmrc from environment variable...")
         with open(f"{path}/docker/.npmrc", "w") as f:
             token = os.environ["NPM_TOKEN"]
