@@ -19,10 +19,12 @@ if os.path.exists(f"{path}/obj"):
 
 # Copy private keys to access git repo
 if not os.path.exists(f"{path}/docker/id_rsa"):
-    if "GIT_PRIVATE_KEY" in os.environ:
+    if "GIT_PRIVATE_KEY" in os.environ and os.environ["GIT_PRIVATE_KEY"] != "":
+        print("Creating docker/id_rsa from environment variable...")
         with open(f"{path}/docker/id_rsa", "w") as f:
             f.write(os.environ["GIT_PRIVATE_KEY"])
     elif os.path.exists("~/.ssh/id_rsa"):
+        print("Copying ~/.ssh/id_rsa to docker...")
         shutil.copyfile("~/.ssh/id_rsa", "{path}/docker")
     else:
         print("Missing ~/.ssh/id_rsa file...")
@@ -30,13 +32,19 @@ if not os.path.exists(f"{path}/docker/id_rsa"):
             f.write("")
 
 # Copy .npmrc to docker folder to use it inside container
-if os.path.exists("~/.npmrc"):
-    print("Putting ~/.npmrc to docker folder...")
-    shutil.copyfile(f"~/.npmrc", "{path}/docker")
-else:
-    print("Missing ~/.npmrc file...")
-    with open(f"{path}/docker/.npmrc", "w") as f:
-        f.write("")
+if not os.path.exists(f"{path}/docker/.npmrc"):
+    if "NPM_TOKEN" in os.environ and os.environ["NPM_TOKEN"] != "":
+        print("Creating docker/.npmrc from environment variable...")
+        with open(f"{path}/docker/.npmrc", "w") as f:
+            token = os.environ["NPM_TOKEN"]
+            f.write(f"//registry.npmjs.org/:_authToken={token}")
+    elif os.path.exists("~/.npmrc"):
+        print("Putting ~/.npmrc to docker folder...")
+        shutil.copyfile(f"~/.npmrc", "{path}/docker")
+    else:
+        print("Missing ~/.npmrc file...")
+        with open(f"{path}/docker/.npmrc", "w") as f:
+            f.write("")
 
 # Build docker image
 os.system(f"docker build -f '{path}/docker/Dockerfile.build' -t {build_image} .")
